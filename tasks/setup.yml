@@ -1,0 +1,5 @@
+---
+- name: Run setup
+  command:
+    cmd: fusiondirectory-setup --set-fd_home=/usr/share/webapps/fusiondirectory --update-cache --update-locales
+    creates: /var/cache/fusiondirectory/class.cache
