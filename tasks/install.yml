@@ -1,0 +1,155 @@
+---
+- include: install_deb.yml
+  when: "ansible_pkg_mgr == 'apt'"
+
+- name: Create rw directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: "{{ fusiondirectory_http_group }}"
+    mode: 0770
+  with_items:
+    - /var/spool/fusiondirectory/locale
+    - /var/spool/fusiondirectory/include
+    - /var/cache/fusiondirectory/tmp
+    - /var/cache/fusiondirectory/fai
+    - /var/cache/fusiondirectory/template
+
+- name: Create ro directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: "{{ fusiondirectory_http_group }}"
+    mode: 0750
+  with_items:
+    - /etc/fusiondirectory
+    - /usr/share/webapps/fusiondirectory
+
+- name: Create download directory
+  file:
+    path: "{{ local_download_dir }}"
+    state: directory
+  become: no
+  run_once: true
+  delegate_to: localhost
+
+- name: Download
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ local_download_dir }}"
+  become: no
+  run_once: true
+  delegate_to: localhost
+  with_items:
+    - "{{ fd_download_url }}"
+    - "{{ plugins_download_url }}"
+
+- name: Extract
+  unarchive:
+    src: "{{ local_download_dir }}/{{ item }}.tar.gz"
+    dest: "{{ local_download_dir }}"
+  become: no
+  run_once: true
+  delegate_to: localhost
+  with_items:
+    - "fusiondirectory-{{ fusiondirectory_version }}"
+    - "fusiondirectory-plugins-{{ fusiondirectory_version }}"
+
+# man pages
+- name: Create temporary directory for man pages
+  tempfile:
+    state: directory
+    suffix: .fd-man
+  changed_when: false
+  register: man_tmpfile
+
+- name: Copy man pages
+  copy:
+    src: "{{ local_fd_dir }}/contrib/man/{{ item.name }}.{{ item.chapter }}"
+    dest: "{{ man_tmpfile.path }}"
+  with_items:
+    - { chapter: 5, name: fusiondirectory.conf }
+    - { chapter: 1, name: fusiondirectory-setup }
+    - { chapter: 1, name: fusiondirectory-insert-schema }
+  changed_when: false
+
+- name: Compress man pages
+  archive:
+    path: "{{ man_tmpfile.path }}/{{ item.name }}.{{ item.chapter }}"
+    dest: "/usr/share/man/man{{ item.chapter }}/{{ item.name }}.{{ item.chapter }}.gz"
+    format: gz
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - { chapter: 5, name: fusiondirectory.conf }
+    - { chapter: 1, name: fusiondirectory-setup }
+    - { chapter: 1, name: fusiondirectory-insert-schema }
+
+- name: Remove the temporary man directory
+  file:
+    path: "{{ man_tmpfile.path }}"
+    state: absent
+  changed_when: false
+
+# Config template
+- name: Copy configuration template
+  copy:
+    src: "{{ local_fd_dir }}/contrib/fusiondirectory.conf"
+    dest: "/var/cache/fusiondirectory/template/"
+    owner: root
+    group: "{{ fusiondirectory_http_group }}"
+    mode: 0644
+
+# Smarty functions
+- name: Find all smarty functions
+  find:
+    paths: "{{ local_fd_dir }}/contrib/smarty/plugins/"
+    file_type: file
+  become: no
+  run_once: true
+  register: functions
+  changed_when: false
+  delegate_to: localhost
+
+- name: Copy smarty functions
+  copy:
+    src: "{{ item.path }}"
+    dest: "/usr/share/php/smarty3/plugins/"
+    owner: root
+    group: "{{ fusiondirectory_http_group }}"
+    mode: 0644
+  with_items: "{{ functions.files }}"
+
+# Setup
+- name: Copy setup
+  copy:
+    src: "{{ local_fd_dir }}/contrib/bin/fusiondirectory-setup"
+    dest: "/usr/bin/"
+    owner: root
+    group: root
+    mode: 0755
+
+# Installation files
+- name: Copy installation files
+  synchronize:
+    src: "{{ local_fd_dir }}/{{ item }}"
+    dest: "/usr/share/webapps/fusiondirectory/"
+    links: yes
+    recursive: yes
+    times: yes
+    rsync_opts: "--chown=root:{{ fusiondirectory_http_group }}"
+  with_items:
+    - html
+    - ihtml
+    - include
+    - locale
+    - plugins
+    - setup
+
+- name: Create JavaScript symlinks
+  command:
+    cmd: "find -L /usr/share/javascript/ -type f -exec ln -s {} /usr/share/webapps/fusiondirectory/html/include/ ;"
+    creates: /usr/share/webapps/fusiondirectory/html/include/prototype.js

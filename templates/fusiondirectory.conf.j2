@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<conf>
+	<main default="{{ fusiondirectory_default_location }}"
+	      forceSSL="{{ fusiondirectory_force_ssl | upper }}"
+	      templateCompileDirectory="/var/spool/fusiondirectory/"
+{% if fusiondirectory_ignore_acl is defined %}
+	      ignoreAcl="{{ fusiondirectory_ignore_acl }}"
+{% endif %}
+	      logging="{{ fusiondirectory_logging | upper }}"
+	      debugLevel="{{ fusiondirectory_debug_level }}"
+	      displayErrors="{{ fusiondirectory_display_errors | upper }}">
+{% for location in fusiondirectory_locations %}
+
+		<location name="{{ location.name }}"
+{% if location.config is defined %}
+		        config="{{ location.config }}"
+{% endif %}
+{% if location.debuglevel is defined %}
+		        debuglevel="{{ location.debuglevel }}"
+{% endif %}
+		        >
+{% for referral in location.referrals %}
+
+			<referral uri="{{ referral.uri }}/{{ referral.basedn }}"
+			          adminDn="{{ referral.admin }}"
+			          adminPassword="{{ referral.password }}"
+			          ldapTLS="{{ referral.tls | default('false') | upper }}"/>
+
+{% endfor %}
+		</location>
+{% endfor %}
+	</main>
+</conf>

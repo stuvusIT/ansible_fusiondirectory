@@ -1,0 +1,6 @@
+---
+local_download_dir: "{{ global_cache_dir | mandatory }}/fusiondirectory"
+local_fd_dir: "{{ local_download_dir }}/fusiondirectory-{{ fusiondirectory_version | mandatory }}"
+local_plugins_dir: "{{ local_download_dir }}/fusiondirectory-plugins-{{ fusiondirectory_version | mandatory }}"
+fd_download_url: "https://repos.fusiondirectory.org/sources/{{ fusiondirectory_major_version }}/fusiondirectory/fusiondirectory-{{ fusiondirectory_version }}.tar.gz"
+plugins_download_url: "https://repos.fusiondirectory.org/sources/{{ fusiondirectory_major_version }}/fusiondirectory/fusiondirectory-plugins-{{ fusiondirectory_version }}.tar.gz"
