@@ -32,6 +32,7 @@
     - php-mbstring
     - php-recode
     - php-xml
+    - rsync
     - schema2ldif
     - smarty-gettext
     - smarty3
