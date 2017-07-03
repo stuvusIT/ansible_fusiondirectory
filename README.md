@@ -12,6 +12,8 @@ Your LDAP server needs to have some schemas loaded, see the Requirements section
 
 A dpkg- or pacman-based Linux distribution.
 
+If you are using Arch Linux, [ansible-aur](https://github.com/pigmonkey/ansible-aur) is required.
+
 An LDAP server needs to be configured and have the following schemas loaded:
 
 ```
@@ -39,6 +41,15 @@ Note that some plugins may require more schemas.
 | `fusiondirectory_display_errors`   | `false`            | Display errors in the FusionDirectory web interface                                             |
 | `fusiondirectory_default_location` | :heavy_check_mark: | Location that is preselected in the dropdown at the login screen                                |
 | `fusiondirectory_locations`        | :heavy_check_mark: | A list of locations. See the next section for details                                           |
+
+#### Arch variables
+
+These variables are only needed when running under Arch Linux
+
+| Name               | Default/Required   | Description                                           |
+|--------------------|:------------------:|-------------------------------------------------------|
+| `global_aur_user`  | :heavy_check_mark: | User to build AUR packages with - not root            |
+| `global_aur_cache` | :heavy_check_mark: | Absolute path to a directory where packages are built |
 
 #### Location specifications
 

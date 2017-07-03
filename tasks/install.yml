@@ -2,6 +2,9 @@
 - include: install_deb.yml
   when: "ansible_pkg_mgr == 'apt'"
 
+- include: install_pacman.yml
+  when: "ansible_pkg_mgr == 'pacman'"
+
 - name: Create rw directories
   file:
     path: "{{ item }}"
@@ -10,6 +13,7 @@
     group: "{{ fusiondirectory_http_group }}"
     mode: 0770
   with_items:
+    - /var/spool/fusiondirectory
     - /var/spool/fusiondirectory/locale
     - /var/spool/fusiondirectory/include
     - /var/cache/fusiondirectory/tmp
