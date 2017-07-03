@@ -1,7 +1,7 @@
 ---
 fusiondirectory_http_group: www-data
 fusiondirectory_major_version: 1.0
-fusiondirectory_version: 1.1.1
+fusiondirectory_version: 1.2
 fusiondirectory_force_ssl: false
 fusiondirectory_logging: true
 fusiondirectory_debug_level: 0

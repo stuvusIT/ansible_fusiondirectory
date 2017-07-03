@@ -1,0 +1,40 @@
+---
+- name: Update pacman cache
+  pacman:
+    update_cache: yes
+  changed_when: false
+
+- name: Install pacman dependencies
+  pacman:
+    name: "{{ item }}"
+  with_items:
+    - gettext
+    - perl-archive-extract
+    - perl-crypt-cbc
+    - perl-crypt-passwdmd5
+    - perl-file-copy-recursive
+    - perl-ldap
+    - perl-path-class
+    - perl-term-readkey
+    - perl-xml-twig
+    - php-gd
+    - php-imap
+    - php-mcrypt
+    - rsync
+
+- name: Install AUR packages
+  aur:
+    name: "{{ item }}"
+    user: "{{ global_aur_user | mandatory }}"
+    dir: "{{ global_aur_cache | mandatory }}"
+  with_items:
+    - javascript-common
+    - php-cas
+    - php-imagick
+    - php-recode
+    - prototype
+    - scriptaculous
+    - schema2ldif
+    - smarty3
+    - smarty3-gettext
+
