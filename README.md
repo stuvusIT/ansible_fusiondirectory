@@ -32,7 +32,7 @@ Note that some plugins may require more schemas.
 |------------------------------------|:------------------:|-------------------------------------------------------------------------------------------------|
 | `global_cache_dir`                 | :heavy_check_mark: | Path to a directory on the control machine where FusionDirectory is downloaded and extracted to |
 | `fusiondirectory_major_version`    | `1.0`              | Major version of FusionDirectory, this is required in the download URL                          |
-| `fusiondirectory_version`          | `1.1.1`            | FusionDirectory version to download and extract                                                 |
+| `fusiondirectory_version`          | `1.2`              | FusionDirectory version to download and extract                                                 |
 | `fusiondirectory_http_group`       | `www-data`         | Group under which the web server runs. This group is allowed to read FusionDirectory's files    |
 | `fusiondirectory_force_ssl`        | `false`            | Force usage of SSL                                                                              |
 | `fusiondirectory_ignore_acl`       |                    | Specification of a DN that ignores all FusionDirectory ACLs                                     |
