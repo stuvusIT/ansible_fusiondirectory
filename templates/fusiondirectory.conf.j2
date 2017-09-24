@@ -21,7 +21,7 @@
 		        >
 {% for referral in location.referrals %}
 
-			<referral uri="{{ referral.uri }}/{{ referral.basedn }}"
+			<referral URI="{{ referral.uri }}/{{ referral.basedn }}"
 			          adminDn="{{ referral.admin }}"
 			          adminPassword="{{ referral.password }}"
 			          ldapTLS="{{ referral.tls | default('false') | upper }}"/>
