@@ -144,7 +144,7 @@
     links: yes
     recursive: yes
     times: yes
-    rsync_opts: "--chown=root:{{ fusiondirectory_http_group }}"
+    rsync_opts: "--usermap=\\*:root --groupmap=\\*:{{ fusiondirectory_http_group | mandatory }}"
   with_items:
     - html
     - ihtml
