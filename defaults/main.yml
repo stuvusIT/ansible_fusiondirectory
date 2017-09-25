@@ -6,3 +6,4 @@ fusiondirectory_force_ssl: false
 fusiondirectory_logging: true
 fusiondirectory_debug_level: 0
 fusiondirectory_display_errors: false
+fusiondirectory_plugins: []
