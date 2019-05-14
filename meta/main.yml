@@ -6,16 +6,12 @@ galaxy_info:
 
   license: CC-BY-SA
 
-  min_ansible_version: 2.0
+  min_ansible_version: 2.7
 
   platforms:
-  - name: Ubuntu
-    versions:
-    - xenial
-    - yakkety
   - name: Debian
     versions:
-    - jessie
+    - stretch
 
   galaxy_tags:
     - ldap

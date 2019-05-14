@@ -1,5 +1,26 @@
 ---
-- include: install.yml
-- include: setup.yml
-- include: configure.yml
-- include: plugins.yml
+- name: Add FusionDirectory key
+  apt_key:
+    keyserver: keys.gnupg.net
+    id: A94DE63F2EDB5F0DC0785EBBD744D55EACDA69FF
+
+- name: Add FusionDirectory repositories
+  apt_repository:
+    repo: deb http://repos.fusiondirectory.org/fusiondirectory-{{ item }}/debian-{{ ansible_distribution_release }} {{ ansible_distribution_release }} main
+    filename: fusiondirectory
+  loop:
+    - current
+    - extra
+
+- name: Install dependencies
+  apt:
+    name: "{{ item }}"
+  loop: "{{ fusiondirectory_plugin_packages + [ 'fusiondirectory' ] }}"
+
+- name: Create FusionDirectory configuration
+  template:
+    src: fusiondirectory.conf.j2
+    dest: /etc/fusiondirectory/fusiondirectory.conf
+    mode: 0640
+    owner: root
+    group: "{{ fusiondirectory_http_group }}"
