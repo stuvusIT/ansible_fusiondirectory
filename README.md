@@ -1,20 +1,15 @@
 # fusiondirectory
 
 This role sets up a FusionDirectory installation.
-Only the PHP application is downloaded (on the control machine), extracted and configured.
 No data is written to your LDAP server, this has to be done by another role.
-Also, you need a PHP-capable webserver which serves `/usr/share/webapps/fusiondirectory`.
+You need a PHP-capable webserver which serves `/usr/share/fusiondirectory/html`.
 
 The schemas are not touched, [fusiondirectory_schemas](https://github.com/stuvusIT/fusiondirectory_schemas) is used for this.
 Your LDAP server needs to have some schemas loaded, see the Requirements section for that.
 
 ## Requirements
 
-A dpkg- or pacman-based Linux distribution.
-
-If you are using Arch Linux, [ansible-aur](https://github.com/pigmonkey/ansible-aur) is required.
-
-An LDAP server needs to be configured and have the following schemas loaded:
+Debian and a LDAP server needs to be configured and have the following schemas loaded:
 
 ```
 cosine
@@ -28,28 +23,17 @@ Note that some plugins may require more schemas.
 
 ## Role Variables
 
-| Name                               | Default/Required   | Description                                                                                     |
-|------------------------------------|:------------------:|-------------------------------------------------------------------------------------------------|
-| `global_cache_dir`                 | :heavy_check_mark: | Path to a directory on the control machine where FusionDirectory is downloaded and extracted to |
-| `fusiondirectory_major_version`    | `1.0`              | Major version of FusionDirectory, this is required in the download URL                          |
-| `fusiondirectory_version`          | `1.2`              | FusionDirectory version to download and extract                                                 |
-| `fusiondirectory_http_group`       | `www-data`         | Group under which the web server runs. This group is allowed to read FusionDirectory's files    |
-| `fusiondirectory_force_ssl`        | `false`            | Force usage of SSL                                                                              |
-| `fusiondirectory_ignore_acl`       |                    | Specification of a DN that ignores all FusionDirectory ACLs                                     |
-| `fusiondirectory_logging`          | `true`             | Enable logging                                                                                  |
-| `fusiondirectory_debug_level`      | `0`                | Debug level for logging                                                                         |
-| `fusiondirectory_display_errors`   | `false`            | Display errors in the FusionDirectory web interface                                             |
-| `fusiondirectory_default_location` | :heavy_check_mark: | Location that is preselected in the dropdown at the login screen                                |
-| `fusiondirectory_locations`        | :heavy_check_mark: | A list of locations. See the next section for details                                           |
-
-#### Arch variables
-
-These variables are only needed when running under Arch Linux
-
-| Name               | Default/Required   | Description                                           |
-|--------------------|:------------------:|-------------------------------------------------------|
-| `global_aur_user`  | :heavy_check_mark: | User to build AUR packages with - not root            |
-| `global_aur_cache` | :heavy_check_mark: | Absolute path to a directory where packages are built |
+| Name                               | Default/Required   | Description                                                                                  |
+|------------------------------------|:------------------:|----------------------------------------------------------------------------------------------|
+| `fusiondirectory_plugin_packages`  | `[]`               | List of extra apt packages to install for FusionDirectory plugins                            |
+| `fusiondirectory_http_group`       | `www-data`         | Group under which the web server runs. This group is allowed to read FusionDirectory's files |
+| `fusiondirectory_force_ssl`        | `false`            | Force usage of SSL                                                                           |
+| `fusiondirectory_ignore_acl`       |                    | Specification of a DN that ignores all FusionDirectory ACLs                                  |
+| `fusiondirectory_logging`          | `true`             | Enable logging                                                                               |
+| `fusiondirectory_debug_level`      | `0`                | Debug level for logging                                                                      |
+| `fusiondirectory_display_errors`   | `false`            | Display errors in the FusionDirectory web interface                                          |
+| `fusiondirectory_default_location` | :heavy_check_mark: | Location that is preselected in the dropdown at the login screen                             |
+| `fusiondirectory_locations`        | :heavy_check_mark: | A list of locations. See the next section for details                                        |
 
 #### Location specifications
 
@@ -85,9 +69,9 @@ These variables are only needed when running under Arch Linux
           basedn: "dc=example,dc=com"
           admin: "cn=root,dc=example,dc=com"
           password: water
-    fusiondirectory_plugins:
-      - dhcp
-      - dns
+    fusiondirectory_plugin_packages:
+      - fusiondirectory-plugin-systems
+      - fusiondirectory-plugin-mail
 ```
 
 ## License
