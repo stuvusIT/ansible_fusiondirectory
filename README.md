@@ -9,7 +9,7 @@ Your LDAP server needs to have some schemas loaded, see the Requirements section
 
 ## Requirements
 
-Debian and an LDAP server needs to be configured and have the following schemas loaded:
+Debian and a LDAP server needs to be configured and have the following schemas loaded:
 
 ```
 cosine
